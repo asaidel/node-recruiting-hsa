@@ -4,16 +4,16 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategoryRepository } from './repositories/category.repository';
 import { CATEGORY_REPOSITORY } from 'src/shared/utils/tokens';
 import { CategoryEntity } from './entities/category.entity';
-import { WinstonLoggerService } from 'src/shared/infrastructure/logger/winston-logger.service';
+import { LoggerService } from 'src/shared/infrastructure/logger/logger.service';
+import { TYPES } from 'src/shared/utils/types';
 import { SubcategoryLevel2 } from './dto/subcategoryLevel2.dto';
 import { Category } from './dto/category.dto';
 
 @Injectable()
 export class CategoryService {
   constructor(
-    @Inject(CATEGORY_REPOSITORY)
-    private readonly categoryRepository: CategoryRepository,
-    private readonly logger: WinstonLoggerService
+    @Inject(CATEGORY_REPOSITORY) private readonly categoryRepository: CategoryRepository,
+    @Inject(TYPES.LoggerService) private readonly logger: LoggerService
   ) { }
 
   private async getSubcategoriesL2() : Promise<Readonly<SubcategoryLevel2[]>> {
@@ -100,7 +100,7 @@ export class CategoryService {
     }
   }
 
-
+  
 
   create(createCategoryDto: CreateCategoryDto) {
     return 'This action adds a new category';

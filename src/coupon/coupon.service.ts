@@ -1,11 +1,12 @@
-import { Inject, Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
 import { CouponRepository } from './repositories/coupon.repository';
 import { CouponEntity } from './entities/coupon.entity';
 import { COUPON_REPOSITORY } from 'src/shared/utils/tokens';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
-import { WinstonLoggerService } from 'src/shared/infrastructure/logger/winston-logger.service';
+import { LoggerService } from 'src/shared/infrastructure/logger/logger.service';
+import { TYPES } from 'src/shared/utils/types';
 import { Coupon } from './dto/coupon.dto';
 
 @Injectable()
@@ -13,7 +14,7 @@ export class CouponService {
   constructor(
     @Inject(COUPON_REPOSITORY) private readonly couponRepository: CouponRepository,    
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,    
-    private readonly logger: WinstonLoggerService
+    @Inject(TYPES.LoggerService) private readonly logger: LoggerService
   ) { }
 
   async findNotExpired(): Promise<CouponEntity[]> {

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateCouponDto } from './dto/create-coupon.dto';
 import { UpdateCouponDto } from './dto/update-coupon.dto';
 import { CouponRepository } from './repositories/coupon.repository';
@@ -21,7 +21,7 @@ export class CouponService {
     const today : Readonly<Date> = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const cachedCoupons : CouponEntity[] = await this.cacheManager.get('couponsFiltered');
+    const cachedCoupons : CouponEntity[] = await this.cacheManager.get(TYPES.CouponsFiltered);
     if (cachedCoupons) {
       return cachedCoupons;
     }
@@ -29,14 +29,13 @@ export class CouponService {
     let coupons: Readonly<Coupon[]>;
     try {
       coupons = await this.couponRepository.findAll();
- //     throw new UnprocessableEntityException('error requesting coupons');
     } catch (error) {
       this.logger.error('error requesting coupons');
-      throw error;
+      throw new InternalServerErrorException('error requesting coupons');
     }
     
     const couponsFiltered : CouponEntity[] = coupons.filter(coupon => today < new Date(coupon.expiresAt));
-    await this.cacheManager.set('couponsFiltered', couponsFiltered);
+    await this.cacheManager.set(TYPES.CouponsFiltered, couponsFiltered);
     return couponsFiltered;
 }
 

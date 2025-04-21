@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategoryRepository } from './repositories/category.repository';
@@ -28,7 +28,7 @@ export class CategoryService {
       return this.sortCategoriesTop(subcategoriesL2, num);
     } catch (error) {
       this.logger.error('error requesting top categories');
-      throw error;
+      throw new InternalServerErrorException('error requesting top categories');
     }
   }
 
@@ -38,7 +38,7 @@ export class CategoryService {
       return this.sortCategoriesNoTop(subcategoriesL2, num);
     } catch (error) {
       this.logger.error('error requesting non-top categories');
-      return [];
+      throw new InternalServerErrorException('error requesting non-top categories');    
     }
   }
 

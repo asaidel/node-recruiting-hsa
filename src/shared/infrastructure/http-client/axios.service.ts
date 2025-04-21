@@ -4,15 +4,15 @@ import { HttpClientService } from './http-client.interface';
 import Axios, { AxiosResponse, AxiosRequestConfig, AxiosError } from 'axios';
 import { Agent } from 'https';
 import { TYPES } from 'src/shared/utils/types';
-//import { LoggerService } from '../logger/logger.service';
+import { LoggerService } from '../logger/logger.service';
 
 @Injectable()
 export class AxiosService implements HttpClientService {
   private readonly environmentsSslVerificationDisabled = ['local'];
 
   constructor(
-   /* @Inject(TYPES.LoggerService)
-    private readonly loggerService: LoggerService,*/
+    @Inject(TYPES.LoggerService)
+    private readonly loggerService: LoggerService,
   ) {}
 
   async get<T>(httpClientRequestDto: HttpClientRequestDto): Promise<T> {
@@ -46,12 +46,12 @@ export class AxiosService implements HttpClientService {
     requestData: HttpClientRequestDto,
   ): Promise<any> {
    try {
-  /*     this.loggerService.info(
+       this.loggerService.info(
         `Consumo del API: ${requestData.url}`,
         requestData.body,
       );
- */     const { data } = await func();
- //     this.loggerService.info(`Respuesta del API: ${requestData.url}`, data);
+      const { data } = await func();
+      this.loggerService.info(`Respuesta del API: ${requestData.url}`, data);
       return data;
     } catch (error) {
       const axiosError: AxiosError = error;
@@ -61,10 +61,10 @@ export class AxiosService implements HttpClientService {
         message: axiosError.message,
         data: axiosError.response?.data,
       };
-/*      this.loggerService.error(
+     this.loggerService.error(
         `Respuesta del API: ${requestData.url}`,
         errorResponse,
-    );*/
+    );
       throw errorResponse;
     }
   }

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CategoryService } from 'src/category/category.service';
 import { CouponService } from 'src/coupon/coupon.service';
 import { Dashboard } from './entities/dashboard.entity';
@@ -27,7 +27,7 @@ export class DashboardService {
     }
     catch (error) {
       this.logger.error('error requesting dashboard');
-      throw error;
+      throw new InternalServerErrorException('error requesting dashboard');
     }   
   }
 }

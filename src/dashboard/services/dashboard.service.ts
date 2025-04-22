@@ -1,7 +1,7 @@
 import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
-import { CategoryService } from 'src/category/category.service';
-import { CouponService } from 'src/coupon/coupon.service';
-import { Dashboard } from './entities/dashboard.entity';
+import { CategoryService } from 'src/category/services/category.service';
+import { CouponService } from 'src/coupon/services/coupon.service';
+import { Dashboard } from '../entities/dashboard.entity';
 import { CategoryEntity } from 'src/category/entities/category.entity';
 import { CouponEntity } from 'src/coupon/entities/coupon.entity';
 import { LoggerService } from 'src/shared/infrastructure/logger/logger.service';

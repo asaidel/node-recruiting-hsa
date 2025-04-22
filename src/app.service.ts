@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CouponService } from './coupon/coupon.service';
-import { CategoryService } from './category/category.service';
+import { CouponService } from './coupon/services/coupon.service';
+import { CategoryService } from './category/services/category.service';
 
 @Injectable()
 export class AppService {   

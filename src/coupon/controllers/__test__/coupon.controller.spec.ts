@@ -1,22 +1,31 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CouponService } from './coupon.service';
-import { CouponEntity } from './entities/coupon.entity';
-import { ConfigService } from '@nestjs/config';
+import { CouponController } from '../coupon.controller';
+import { CouponService } from '../../services/coupon.service';
+import { CouponEntity } from '../../entities/coupon.entity';
 import { COUPON_REPOSITORY } from 'src/shared/utils/tokens';
-import { TYPES } from 'src/shared/utils/types';
-import { WinstonLoggerService } from 'src/shared/infrastructure/logger/winston-logger.service';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { CouponModule } from './coupon.module';
+import { WinstonLoggerService } from 'src/shared/infrastructure/logger/winston-logger.service';
+import { TYPES } from 'src/shared/utils/types';
+import { ConfigService } from '@nestjs/config';
+import { CouponModule } from '../../coupon.module';
 import path from 'node:path';
 import { readFile } from 'node:fs/promises';
 
-describe('CouponService', () => {
+describe('CouponController', () => {
+  let controller: CouponController;
   let service: CouponService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [CouponModule],
+      controllers: [CouponController],
       providers: [CouponService,
+        {
+          provide: COUPON_REPOSITORY,
+          useValue: {
+            find: jest.fn(),
+          },
+        },
         {
           provide: CACHE_MANAGER,
           useValue: {
@@ -40,13 +49,6 @@ describe('CouponService', () => {
           },
         },
         {
-          provide: COUPON_REPOSITORY,
-          useValue: {
-            get: jest.fn(),
-            set: jest.fn(),
-          }
-        },
-        {
           provide: ConfigService,
           useValue: {
             get: jest.fn(),
@@ -55,10 +57,10 @@ describe('CouponService', () => {
         }],
     }).compile();
 
+    controller = module.get<CouponController>(CouponController);
     service = module.get<CouponService>(CouponService);
   });
 
-  
   describe('findNotExpired', () => {
     it('should return an array of coupons', async () => {
       const relativePath = 'test/data/coupons-ok.json';
@@ -68,15 +70,16 @@ describe('CouponService', () => {
 
       jest.spyOn(service, 'findNotExpired').mockImplementation(async () => result);
 
-      const found = await service.findNotExpired();
+      const found = await controller.findNotExpired();
       expect(found.length).toBe(result.length);
-       
+
       expect(found[0].expiresAt).toBe(result[0].expiresAt);
       expect(found[0].description).toBe(result[0].description);
     });
   });
-  
+
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(controller).toBeDefined();
   });
 });
+

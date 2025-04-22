@@ -1,13 +1,13 @@
 import { Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
-import { CreateCouponDto } from './dto/create-coupon.dto';
-import { UpdateCouponDto } from './dto/update-coupon.dto';
-import { CouponRepository } from './repositories/coupon.repository';
-import { CouponEntity } from './entities/coupon.entity';
+import { CreateCouponDto } from '../dto/create-coupon.dto';
+import { UpdateCouponDto } from '../dto/update-coupon.dto';
+import { CouponRepository } from '../repositories/coupon.repository';
+import { CouponEntity } from '../entities/coupon.entity';
 import { COUPON_REPOSITORY } from 'src/shared/utils/tokens';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { LoggerService } from 'src/shared/infrastructure/logger/logger.service';
 import { TYPES } from 'src/shared/utils/types';
-import { Coupon } from './dto/coupon.dto';
+import { Coupon } from '../dto/coupon.dto';
 
 @Injectable()
 export class CouponService {

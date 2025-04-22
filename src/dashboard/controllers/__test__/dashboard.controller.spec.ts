@@ -2,20 +2,22 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CATEGORY_REPOSITORY, COUPON_REPOSITORY } from 'src/shared/utils/tokens';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { WinstonLoggerService } from 'src/shared/infrastructure/logger/winston-logger.service';
-import { DashboardService } from './dashboard.service';
-import { DashboardModule } from './dashboard.module';
-import { Dashboard } from './entities/dashboard.entity';
-import { CouponService } from 'src/coupon/coupon.service';
-import { CategoryService } from 'src/category/category.service';
+import { DashboardController } from '../dashboard.controller';
+import { DashboardService } from '../../services/dashboard.service';
+import { DashboardModule } from '../../dashboard.module';
+import { Dashboard } from '../../entities/dashboard.entity';
+import { CouponService } from 'src/coupon/services/coupon.service';
+import { CategoryService } from 'src/category/services/category.service';
 import path from 'node:path';
 import { readFile } from 'node:fs/promises';
 
 describe('DashboardController', () => {
-  let service: DashboardService;
+  let controller: DashboardController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [DashboardModule],
+      controllers: [DashboardController],
       providers: [DashboardService, CouponService, CategoryService,
         {
           provide: COUPON_REPOSITORY,
@@ -47,7 +49,7 @@ describe('DashboardController', () => {
       ],
     }).compile();
 
-    service = module.get<DashboardService>(DashboardService);
+    controller = module.get<DashboardController>(DashboardController);
   });
 
   describe('dashboard', () => {
@@ -57,9 +59,10 @@ describe('DashboardController', () => {
       const fileContent = await readFile(filePath, 'utf8');     
       const result: Dashboard = JSON.parse(fileContent);
 
-      jest.spyOn(service, 'getDashboard').mockImplementation(async () => result);
+      jest.spyOn(controller, 'dashboard').mockImplementation(async () => result);
 
-      const found = await service.getDashboard(5);     
+      const found = await controller.dashboard(5);
+      expect(found.coupons.length).toBe(result.coupons.length);
 
       expect(found.coupons[0].expiresAt).toBe(result.coupons[0].expiresAt);
       expect(found.categories[0].name).toBe(result.categories[0].name);
@@ -67,6 +70,6 @@ describe('DashboardController', () => {
   });
 
   it('should be defined', () => {
-    expect(service).toBeDefined();
+    expect(controller).toBeDefined();
   });
 });

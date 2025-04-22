@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { CouponService } from './coupon.service';
-import { CreateCouponDto } from './dto/create-coupon.dto';
-import { UpdateCouponDto } from './dto/update-coupon.dto';
-import { CouponEntity } from './entities/coupon.entity';
+import { CouponService } from '../services/coupon.service';
+import { CreateCouponDto } from '../dto/create-coupon.dto';
+import { UpdateCouponDto } from '../dto/update-coupon.dto';
+import { CouponEntity } from '../entities/coupon.entity';
 import { ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('coupon')

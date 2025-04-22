@@ -1,23 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CATEGORY_REPOSITORY, COUPON_REPOSITORY } from 'src/shared/utils/tokens';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { WinstonLoggerService } from 'src/shared/infrastructure/logger/winston-logger.service';
-import { DashboardController } from './dashboard.controller';
-import { DashboardService } from './dashboard.service';
-import { DashboardModule } from './dashboard.module';
-import { Dashboard } from './entities/dashboard.entity';
-import { CouponService } from 'src/coupon/coupon.service';
-import { CategoryService } from 'src/category/category.service';
+import { CATEGORY_REPOSITORY, COUPON_REPOSITORY } from 'src/shared/utils/tokens';
+import { DashboardService } from '../dashboard.service';
+import { DashboardModule } from '../../dashboard.module';
+import { Dashboard } from '../../entities/dashboard.entity';
+import { CouponService } from 'src/coupon/services/coupon.service';
+import { CategoryService } from 'src/category/services/category.service';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import path from 'node:path';
 import { readFile } from 'node:fs/promises';
 
 describe('DashboardController', () => {
-  let controller: DashboardController;
+  let service: DashboardService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [DashboardModule],
-      controllers: [DashboardController],
       providers: [DashboardService, CouponService, CategoryService,
         {
           provide: COUPON_REPOSITORY,
@@ -49,7 +47,7 @@ describe('DashboardController', () => {
       ],
     }).compile();
 
-    controller = module.get<DashboardController>(DashboardController);
+    service = module.get<DashboardService>(DashboardService);
   });
 
   describe('dashboard', () => {
@@ -59,10 +57,9 @@ describe('DashboardController', () => {
       const fileContent = await readFile(filePath, 'utf8');     
       const result: Dashboard = JSON.parse(fileContent);
 
-      jest.spyOn(controller, 'dashboard').mockImplementation(async () => result);
+      jest.spyOn(service, 'getDashboard').mockImplementation(async () => result);
 
-      const found = await controller.dashboard(5);
-      expect(found.coupons.length).toBe(result.coupons.length);
+      const found = await service.getDashboard(5);     
 
       expect(found.coupons[0].expiresAt).toBe(result.coupons[0].expiresAt);
       expect(found.categories[0].name).toBe(result.categories[0].name);
@@ -70,6 +67,6 @@ describe('DashboardController', () => {
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(service).toBeDefined();
   });
 });

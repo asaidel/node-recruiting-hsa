@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
-import { CategoryService } from './category.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
-import { CategoryEntity } from './entities/category.entity';
+import { CategoryService } from '../services/category.service';
+import { CreateCategoryDto } from '../dto/create-category.dto';
+import { UpdateCategoryDto } from '../dto/update-category.dto';
+import { CategoryEntity } from '../entities/category.entity';
 import { ApiExcludeEndpoint, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('category')

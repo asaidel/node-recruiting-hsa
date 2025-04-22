@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
-import { DashboardController } from './dashboard.controller';
-import { DashboardService } from './dashboard.service';
 import { CouponModule } from 'src/coupon/coupon.module';
 import { CategoryModule } from 'src/category/category.module';
-import { SharedModule } from 'src/shared/shared.module';
+import { DashboardController } from './controllers/dashboard.controller';
+import { DashboardService } from './services/dashboard.service';
 
 @Module({
   imports: [CouponModule, CategoryModule],

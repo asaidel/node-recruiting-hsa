@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { CouponService } from './coupon.service';
-import { CouponController } from './coupon.controller';
 import { CouponAxiosRepository } from './repositories/coupon.repository-axios';
 import { COUPON_REPOSITORY } from 'src/shared/utils/tokens';
 import { CacheModule } from '@nestjs/cache-manager';
 import { SharedModule } from 'src/shared/shared.module';
+import { CouponController } from './controllers/coupon.controller';
+import { CouponService } from './services/coupon.service';
 
 @Module({
   imports: [

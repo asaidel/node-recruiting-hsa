@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { CategoryService } from './category.service';
-import { CategoryController } from './category.controller';
+import { CategoryService } from './services/category.service';
+import { CategoryController } from './controllers/category.controller';
 import { HttpModule } from '@nestjs/axios';
 import { CATEGORY_REPOSITORY } from 'src/shared/utils/tokens';
 import { CategoryAxiosRepository } from './repositories/category.repository-axios';

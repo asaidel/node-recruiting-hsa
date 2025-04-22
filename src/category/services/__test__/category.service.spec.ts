@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CategoryService } from './category.service';
-import { CategoryModule } from './category.module';
+import { CategoryService } from '../category.service';
+import { CategoryModule } from '../../category.module';
 import { CATEGORY_REPOSITORY } from 'src/shared/utils/tokens';
 import { WinstonLoggerService } from 'src/shared/infrastructure/logger/winston-logger.service';
 import { TYPES } from 'src/shared/utils/types';
 import { ConfigService } from '@nestjs/config';
-import { CategoryEntity } from './entities/category.entity';
+import { CategoryEntity } from '../../entities/category.entity';
 import path from 'node:path';
 import { readFile } from 'node:fs/promises';
 

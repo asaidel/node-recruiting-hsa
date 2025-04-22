@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { DashboardService } from './dashboard.service';
-import { Dashboard } from './entities/dashboard.entity';
+import { DashboardService } from '../services/dashboard.service';
+import { Dashboard } from '../entities/dashboard.entity';
 import { ApiTags, ApiQuery } from '@nestjs/swagger';
 
 @ApiTags('dashboard')

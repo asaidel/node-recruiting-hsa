@@ -11,8 +11,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Desafio Node Accenture')
     .setDescription('Desafio técnico para evaluar el conocimiento de los aspirantes a unirse al equipo de **Backend**')
-    .setVersion('1.0')
-    .addTag('challenge')
+    .setVersion('1.0')   
     .build();
     
   //await SwaggerModule.loadPluginMetadata(metadata);

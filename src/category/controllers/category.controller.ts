@@ -1,33 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Post, Body, Patch, Param, Delete, Get } from '@nestjs/common';
 import { CategoryService } from '../services/category.service';
 import { CreateCategoryDto } from '../dto/create-category.dto';
 import { UpdateCategoryDto } from '../dto/update-category.dto';
-import { CategoryEntity } from '../entities/category.entity';
-import { ApiExcludeEndpoint, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('category')
 @Controller('category')
 export class CategoryController {
   constructor(
     private readonly categoryService: CategoryService) {}
-  
-  @Get('top')
-  @ApiQuery({ name: 'limit', required: true, type: Number })
-  public async findTop(@Query('limit') num: Readonly<number>): Promise<Readonly<CategoryEntity[]>>  {
-    return await this.categoryService.findTop(num);
-  }
-
-  @Get('notop')
-  @ApiQuery({ name: 'from', required: true, type: Number })
-  public async findNoTop(@Query('from') num: Readonly<number>): Promise<Readonly<CategoryEntity[]>>  {
-    return await this.categoryService.findNoTop(num);
-  }
-
-
-
-
-
-
 
   @Post()
   @ApiExcludeEndpoint()

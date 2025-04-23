@@ -5,10 +5,12 @@ import { HttpModule } from '@nestjs/axios';
 import { CATEGORY_REPOSITORY } from 'src/shared/utils/tokens';
 import { CategoryAxiosRepository } from './repositories/category.repository-axios';
 import { SharedModule } from 'src/shared/shared.module';
+import { GetFindTopController } from './controllers/get-find-top.controller';
+import { GetFindNoTopController } from './controllers/get-find-no-top.controller';
 
 @Module({
   imports: [SharedModule, HttpModule],
-  controllers: [CategoryController],
+  controllers: [ GetFindTopController, GetFindNoTopController, CategoryController,],
   providers: [
     CategoryService,
     {

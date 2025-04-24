@@ -6,11 +6,41 @@ import { WinstonLoggerService } from 'src/shared/infrastructure/logger/winston-l
 import { TYPES } from 'src/shared/utils/types';
 import { ConfigService } from '@nestjs/config';
 import { CategoryEntity } from '../../entities/category.entity';
-import path from 'node:path';
-import { readFile } from 'node:fs/promises';
 
 describe('CategoryService', () => {
   let service: CategoryService;
+
+  const mockCategories: CategoryEntity[] = [{
+    id: "MOB",
+    name: "MOBILE_MARKET",
+    subcategories: [
+      {
+        id: "video-games",
+        name: "Video Games",
+        relevance: 150,
+        subcategories: [
+          {
+            id: "nintendo",
+            name: "Nintendo",
+            smallImageUrl: "https://example.com/image.jpg",
+            subcategories: [
+              {
+                id: "switch",
+                name: "Switch",
+                relevance: 422
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: "toys",
+        name: "Toys",
+        relevance: 99,
+        subcategories: []
+      }
+    ]
+  }];
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -19,7 +49,15 @@ describe('CategoryService', () => {
         {
           provide: CATEGORY_REPOSITORY,
           useValue: {
-            find: jest.fn(),
+            findAll: jest.fn().mockResolvedValue(mockCategories[0]),
+          },
+        },
+        {
+          provide: TYPES.LoggerService,
+          useValue: {
+            log: jest.fn(),
+            error: jest.fn(),
+            warn: jest.fn(),
           },
         },
         {
@@ -31,19 +69,12 @@ describe('CategoryService', () => {
           },
         },
         {
-          provide: TYPES.HttpClientService,
-          useValue: {
-            get: jest.fn(),
-            set: jest.fn(),
-          },
-        },
-        {
           provide: ConfigService,
           useValue: {
             get: jest.fn(),
-            set: jest.fn(),
           }
-        }],
+        }
+      ],
     }).compile();
 
     service = module.get<CategoryService>(CategoryService);
@@ -51,34 +82,57 @@ describe('CategoryService', () => {
 
   describe('findTop', () => {
     it('should return top array of categories', async () => {
-      const relativePath = 'test/data/categories-ok.json';
-      const filePath = path.resolve('.', relativePath);
-      const fileContent = await readFile(filePath, 'utf8');      
-      const result: CategoryEntity[] = JSON.parse(fileContent);
+      const num = 5;
+      const result = await service.findTop(num);
+      
+      // Verify the result has expected structure and data
+      expect(result).toBeDefined();
+      expect(Array.isArray(result)).toBeTruthy();
+      expect(result.length).toBeLessThanOrEqual(num);
+      
+      // Check sorting by relevance
+      if (result.length > 1) {
+        for (let i = 0; i < result.length - 1; i++) {
+          const currentRelevance = result[i].relevance || 0;
+          const nextRelevance = result[i + 1].relevance || 0;
+          expect(currentRelevance).toBeGreaterThanOrEqual(nextRelevance);
+        }
+      }
+    });
 
-      jest.spyOn(service, 'findTop').mockImplementation(async () => result);
-
-      const found = await service.findTop(5);      
-
-      compareNestedStructures(found, result);
+    it('should handle errors gracefully', async () => {
+      jest.spyOn(service['categoryRepository'], 'findAll').mockRejectedValue(new Error('API Error'));
+      
+      await expect(service.findTop(5)).rejects.toThrow('error requesting top categories');
     });
   });
 
-  function compareNestedStructures(found: any, expected: any) {
-    if (Array.isArray(found)) {
-      expect(found.length).toBe(expected.length);
-      found.forEach((item, index) => {
-        compareNestedStructures(item, expected[index]);
-      });
-    } else if (typeof found === 'object' && found !== null) {
-      Object.keys(expected).forEach(key => {
-        expect(found).toHaveProperty(key);
-        compareNestedStructures(found[key], expected[key]);
-      });
-    } else {
-      expect(found).toEqual(expected);
-    }
-  }
+  describe('findNoTop', () => {
+    it('should return non-top array of categories', async () => {
+      const num = 1;
+      const result = await service.findNoTop(num);
+      
+      expect(result).toBeDefined();
+      if (result) {
+        expect(Array.isArray(result)).toBeTruthy();
+        
+        // Check sorting by relevance
+        if (result.length > 1) {
+          for (let i = 0; i < result.length - 1; i++) {
+            const currentRelevance = result[i].relevance || 0;
+            const nextRelevance = result[i + 1].relevance || 0;
+            expect(currentRelevance).toBeGreaterThanOrEqual(nextRelevance);
+          }
+        }
+      }
+    });
+
+    it('should handle errors gracefully', async () => {
+      jest.spyOn(service['categoryRepository'], 'findAll').mockRejectedValue(new Error('API Error'));
+      
+      await expect(service.findNoTop(5)).rejects.toThrow('error requesting non-top categories');
+    });
+  });
 
   it('should be defined', () => {
     expect(service).toBeDefined();

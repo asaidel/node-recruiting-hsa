@@ -82,7 +82,33 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/dist/",
+      "/coverage/",
+      "/test/",
+      "main.ts",
+      "metadata.ts",
+      ".module.ts$",
+      ".dto.ts$",
+      ".entity.ts$",
+      ".repository.ts$",
+      "/shared/infrastructure/",
+      "/shared/utils/",
+      "/middleware/",
+      "app.controller.ts",
+      "app.service.ts",
+      "/shared/domain/entities/"
+    ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "coverageThreshold": {
+      "global": {
+        "branches": 70,
+        "functions": 70,
+        "lines": 70,
+        "statements": 70
+      }
+    }
   }
 }
